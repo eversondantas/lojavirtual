@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<LojaVirtualMVC.Models.ProdutoModel>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Principal";
 }
-
 <h2>Produtos</h2>
+<br />
 
 <p>
-    @Html.ActionLink("Novo Produto", "Create")
+    <a href="@Url.Action("AddOrEdit","Produto")" class="btn btn-default"><i class="fa fa-plus"></i> Novo Produto</a>
 </p>
 <table class="table">
     <tr>
@@ -23,29 +23,45 @@
         <th>
             @Html.DisplayNameFor(model => model.Estoque)
         </th>
-        <th></th>
+        <th>Ações</th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Codigo)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Descricao)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Preco)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Estoque)
-        </td>
-        <td>
-            @Html.ActionLink("Editar", "Edit", new { /* id=item.PrimaryKey */ }) |
-            @Html.ActionLink("Detalhes", "Details", new { /* id=item.PrimaryKey */ }) |
-            @Html.ActionLink("Excluir", "Delete", new { /* id=item.PrimaryKey */ })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Codigo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Descricao)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Preco)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Estoque)
+            </td>
+            <td>
+                <a href="@Url.Action("AddOrEdit", "Produto", new { id = item.ProdutoID })" class="btn btn-default"><i class="fa fa-pencil-alt"></i> Editar</a>
+                <a onclick="Delete(@item.ProdutoID)" class="btn btn-default"><i class="fa fa-trash"></i> Excluir</a>
+            </td>
+        </tr>
+    }
 
 </table>
+
+@section scripts{
+    <script>
+        $(function () {
+            var successMessage = '@TempData["SuccessMessage"]'
+            if (successMessage != '')
+                alertify.success(successMessage);
+        });
+
+        function Delete(id) {
+            alertify.confirm('Loja Virtual', 'Tem certeza que deseja excluir este produto?', function () {
+                window.location.href = '@Url.Action("Delete", "Produto")/' + id;
+            }, null);
+        }
+    </script>
+}
